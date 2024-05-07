@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .product-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .product-image {
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+        }
+        .product-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .product-details {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .author {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .like-count {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .created-at {
+            font-style: italic;
+            color: #6c757d;
+        }
+        .profile-photo {
+            display: block;
+            margin: 0 auto;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .product-actions {
+            display: flex;
+            justify-content: center;
+        }
+        .product-action {
+            background-color: #1d87de;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+        .product-action:hover {
+            background-color: #13888e;
+        }
+        .bottom-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            border-top: 1px solid #ccc;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            text-align: center;
+            flex: 1;
+            text-decoration: none;
+            color: #888;
+        }
+
+        .menu-item:hover {
+            color: #1673ff;
+        }
+
+        .menu-item i {
+            font-size: 20px;
+        }
+
+        .menu-item span {
+            display: block;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="product-info">
+            {% if products.first_product_photo %}
+            <img class="product-image" src="{{ products.first_product_photo.url }}" alt="">
+            {% else %}
+            <img class="product-image" src="https://i.pinimg.com/originals/86/cf/be/86cfbe5e886db873573e9e1fc7690f19.jpg" alt="">
+            {% endif %}
+            <h1 class="product-title">{{ products.product_title }}</h1>
+            {% if products.user.user_profile_photo %}
+            <img src="{{ products.user.user_profile_photo.url }}" class="profile-photo" alt="">
+            {% else %}
+            <img src="https://i.stack.imgur.com/l60Hf.png" class="profile-photo" alt="">
+            {% endif %}
+            <p class="product-details">By <span class="author">{{ products.user }}</span> |
+            <span class="like-count">{{ products.best_product.count }}</span> Likes |
+            Created at <span class="created-at">{{ products.created_at }}</span></p>
+            <h1></h1>
+            <span>Количество Товара  {{ products.quantity }}</span>
+            <h1></h1>
+            <span>Телефон номер {{ products.telephone_number }}</span>
+            <h1></h1>
+            <span>{{ products.user.country }}</span>
+            <h1></h1>
+            <span> Цена {{ products.product_price }}$</span>
+            <h1></h1>
+            <span>Описание Товара  {{ products.litle }}</span>
+            </div>
+
+        <div class="product-actions">
+            <form action="{% url "like" products.id %}">
+                {% csrf_token %}
+                <button type="submit" class="product-action">Like</button>
+            </form>
+            <a href="{% url "comment" products.id %}" class="product-action">Leave a Review</a>
+            <form action="{% url "add_to_cart" products.id %}">
+                {% csrf_token %}
+                <button type="submit" class="product-action">Add To Cart</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+<nav class="bottom-menu">
+    <a href="{% url "search" %}" class="menu-item">
+        <i class="fa fa-search"></i>
+        <span>Поиск</span>
+    </a>
+    <a href="{% url "product_uploud" %}" class="menu-item">
+        <i class="fa fa-plus"></i>
+        <span>Добавить объявление  </span>
+    </a>
+    <a href="{% url "user_profile" %}" class="menu-item">
+        <i class="fa fa-user"></i>
+        <span>Кабинет</span>
+    </a>
+    <a href="{% url "view_cart" %}" class="menu-item">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>Корзина</span>
+    </a>
+</nav>
+
+<script>
+
+
+
+
+
+</script>
